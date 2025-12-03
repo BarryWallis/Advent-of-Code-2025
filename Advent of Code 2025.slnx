@@ -1,1 +1,4 @@
-<Solution />
+<Solution>
+  <Project Path="Day1a.Tests/Day1a.Tests.csproj" />
+  <Project Path="Day1a/Day1a.csproj" />
+</Solution>
