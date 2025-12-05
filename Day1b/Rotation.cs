@@ -26,7 +26,7 @@ public record Rotation(char Direction, int Distance)
     /// <exception cref="ArgumentException">Thrown when the value is not 'L' or 'R'.</exception>
     public char Direction
     {
-        get => field;
+        get;
         init
         {
             if (value is not 'L' and not 'R')
@@ -46,7 +46,7 @@ public record Rotation(char Direction, int Distance)
     /// <exception cref="ArgumentException">Thrown when the value is not positive.</exception>
     public int Distance
     {
-        get => field;
+        get;
         init
         {
             if (value <= 0)
