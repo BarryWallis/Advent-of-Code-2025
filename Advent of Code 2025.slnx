@@ -8,5 +8,7 @@
   <Folder Name="/Day2/">
     <Project Path="Day2a.Tests/Day2a.Tests.csproj" />
     <Project Path="Day2a/Day2a.csproj" Id="360c4279-86fc-4862-80b4-4cedf531b6b5" />
+    <Project Path="Day2b.Tests/Day2b.Tests.csproj" />
+    <Project Path="Day2b/Day2b.csproj" Id="ec939677-fca2-453f-becf-29cd98e826f9" />
   </Folder>
 </Solution>
