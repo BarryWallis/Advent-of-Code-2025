@@ -14,5 +14,7 @@
   <Folder Name="/Day3/">
     <Project Path="Day3a.Tests/Day3a.Tests.csproj" />
     <Project Path="Day3a/Day3a.csproj" Id="38eaa5c5-0410-4dd6-8a44-46f8a355aea6" />
+    <Project Path="Day3b.Tests/Day3b.Tests.csproj" />
+    <Project Path="Day3b/Day3b.csproj" Id="61a07ac0-cf7c-4bb6-b99c-23f2e9467245" />
   </Folder>
 </Solution>

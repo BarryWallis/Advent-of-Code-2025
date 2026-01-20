@@ -294,7 +294,7 @@ public class BatteryBankTests
     public void ReadBatteryBankAtEndOfStreamReturnsNull()
     {
         StringReader reader = new("12");
-        BatteryBank.ReadBatteryBank(reader);
+        _ = BatteryBank.ReadBatteryBank(reader);
 
         BatteryBank? batteryBank = BatteryBank.ReadBatteryBank(reader);
 

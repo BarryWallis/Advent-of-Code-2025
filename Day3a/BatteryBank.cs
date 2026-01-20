@@ -65,7 +65,7 @@ internal record BatteryBank
         {
             int firstDigitIndex = LeftmostLargestDigitIndex(_bank.AsSpan()[..^1]);
             int secondDigitIndex = LeftmostLargestDigitIndex(_bank.AsSpan()[(firstDigitIndex + 1)..]) + firstDigitIndex + 1;
-            return (_bank[firstDigitIndex] - '0') * 10 + (_bank[secondDigitIndex] - '0');
+            return ((_bank[firstDigitIndex] - '0') * 10) + (_bank[secondDigitIndex] - '0');
         }
     }
 
