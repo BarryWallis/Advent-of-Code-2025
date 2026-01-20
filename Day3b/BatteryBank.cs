@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Day3b;
 
@@ -50,65 +47,61 @@ internal record BatteryBank
                     $"calculate total joltage.");
             }
 
-            StringBuilder selectedDigits = new();
-            string remainingDigits = _bank;
+            Span<char> selectedDigits = stackalloc char[BatteryCount];
+            ReadOnlySpan<char> remainingDigits = _bank.AsSpan();
+            int selectedCount = 0;
+
             // Greedily select the largest digit at each position while ensuring enough digits remain
-            while (selectedDigits.Length < BatteryCount)
+            while (selectedCount < BatteryCount)
             {
-                // Find the window containing the largest available digit
-                remainingDigits = FindLargestDigit(remainingDigits, selectedDigits.Length);
-                // Select the first digit in the window (which is the largest)
-                _ = selectedDigits.Append(remainingDigits[0]);
+                // Find the index of the largest digit within the valid window
+                int largestIndex = FindLargestDigitIndex(remainingDigits, selectedCount);
+                // Select the digit
+                selectedDigits[selectedCount++] = remainingDigits[largestIndex];
                 // Move past the selected digit
-                remainingDigits = remainingDigits[1..];
+                remainingDigits = remainingDigits[(largestIndex + 1)..];
             }
 
-            return BigInteger.Parse(selectedDigits.ToString());
+            return BigInteger.Parse(selectedDigits);
         }
     }
 
     /// <summary>
-    /// Finds the largest digit within a valid selection window that ensures enough digits remain
+    /// Finds the index of the largest digit within a valid selection window that ensures enough digits remain
     /// to complete the required count.
     /// </summary>
     /// <param name="remainingDigits">The remaining unselected digits to search.</param>
-    /// <param name="selectedDigitsLength">The number of digits already selected.</param>
+    /// <param name="selectedCount">The number of digits already selected.</param>
     /// <returns>
-    /// A substring starting at the position of the largest digit, or the entire remaining string
-    /// if all remaining digits must be selected.
+    /// The index of the largest digit within the valid window.
     /// </returns>
-    /// <exception cref="UnreachableException">
-    /// Thrown if no valid largest digit is found, which should never occur with valid input.
-    /// </exception>
     /// <remarks>
     /// The search window is constrained to ensure that after selecting a digit, enough digits remain
     /// to reach the target count of <see cref="BatteryCount"/>.
+    /// If all remaining digits are needed, returns 0 (the first remaining digit).
     /// </remarks>
-    private static string FindLargestDigit(string remainingDigits, int selectedDigitsLength)
+    private static int FindLargestDigitIndex(ReadOnlySpan<char> remainingDigits, int selectedCount)
     {
-        // If all remaining digits are needed, return them all one at a time.
-        if (remainingDigits.Length + selectedDigitsLength <= BatteryCount)
+        // If all remaining digits are needed, return the first one
+        if (remainingDigits.Length + selectedCount <= BatteryCount)
         {
-            return remainingDigits;
+            return 0;
         }
 
-        // Initialize to a value less than any digit character ('0' = 48, so '/' = 47)
-        const char lowerThanDigits = (char)('0' - 1);
-        char largestDigit = lowerThanDigits;
-        int largestDigitIndex = -1;
+        // Calculate the window size where we can still select enough remaining digits
+        int windowSize = remainingDigits.Length - (BatteryCount - selectedCount) + 1;
         
-        // Search only the window where we can still select enough remaining digits
-        // Window size = remainingDigits.Length - (BatteryCount - selectedDigitsLength) + 1
-        for (int i = 0; i <= remainingDigits.Length - (BatteryCount - selectedDigitsLength); i++)
+        // Find the index of the largest digit in the window
+        int maxIndex = 0;
+        for (int i = 1; i < windowSize; i++)
         {
-            if (remainingDigits[i] > largestDigit)
+            if (remainingDigits[i] > remainingDigits[maxIndex])
             {
-                largestDigit = remainingDigits[i];
-                largestDigitIndex = i;
+                maxIndex = i;
             }
         }
-
-        return largestDigitIndex < 0 ? throw new UnreachableException() : remainingDigits[largestDigitIndex..];
+        
+        return maxIndex;
     }
 
     /// <summary>
