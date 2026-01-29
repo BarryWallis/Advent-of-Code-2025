@@ -20,5 +20,7 @@
   <Folder Name="/Day4/">
     <Project Path="Day4a.Tests/Day4a.Tests.csproj" />
     <Project Path="Day4a/Day4a.csproj" Id="c3de9fa9-045e-4de4-abca-87344f2ae90d" />
+    <Project Path="Day4b.Tests/Day4b.Tests.csproj" />
+    <Project Path="Day4b/Day4b.csproj" Id="17d75215-2ced-4b25-84ba-f866f52b1a39" />
   </Folder>
 </Solution>
