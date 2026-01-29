@@ -23,4 +23,5 @@
     <Project Path="Day4b.Tests/Day4b.Tests.csproj" />
     <Project Path="Day4b/Day4b.csproj" Id="17d75215-2ced-4b25-84ba-f866f52b1a39" />
   </Folder>
+  <Project Path="BenchmarkSuite1/BenchmarkSuite1.csproj" />
 </Solution>

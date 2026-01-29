@@ -5,9 +5,9 @@
 internal class Floor
 {
     /// <summary>
-    /// Collection of all roll positions on the floor.
+    /// Collection of all roll positions on the floor, indexed by (row, column) for O(1) lookup.
     /// </summary>
-    private readonly HashSet<RollOfPaper> _rolls = [];
+    private readonly Dictionary<(int Row, int Column), RollOfPaper> _rolls = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Floor"/> class by parsing input text.
@@ -42,7 +42,8 @@ internal class Floor
                         break;
                     case '@':
                         // Handle space with a roll of paper
-                        _ = _rolls.Add(new RollOfPaper(row, column));
+                        RollOfPaper roll = new(row, column);
+                        _rolls[(row, column)] = roll;
                         break;
                     default:
                         // Handle other cases
@@ -68,7 +69,7 @@ internal class Floor
     internal int CountAccessibleRolls()
     {
         int accessibleCount = 0;
-        foreach (RollOfPaper roll in _rolls)
+        foreach (RollOfPaper roll in _rolls.Values)
         {
             int count = CountNeighbors(roll);
 
@@ -100,10 +101,14 @@ internal class Floor
         int totalRemovedCount = 0;
         do
         {
-            HashSet<RollOfPaper> removedRolls = GetAccessibleRolls();
-            removedCount = removedRolls.Count;
-            totalRemovedCount += removedRolls.Count;
-            _rolls.ExceptWith(removedRolls);
+            List<(int Row, int Column)> removedKeys = GetAccessibleRollKeys();
+            removedCount = removedKeys.Count;
+            totalRemovedCount += removedKeys.Count;
+
+            foreach ((int row, int col) key in removedKeys)
+            {
+                _ = _rolls.Remove(key);
+            }
 
         } while (removedCount > 0);
 
@@ -111,25 +116,25 @@ internal class Floor
     }
 
     /// <summary>
-    /// Identifies and returns all currently accessible rolls without removing them from the floor.
+    /// Identifies and returns the keys of all currently accessible rolls without removing them from the floor.
     /// </summary>
-    /// <returns>A set containing all accessible rolls (those with 4 or fewer neighbors including themselves).</returns>
+    /// <returns>A list containing the keys of all accessible rolls (those with 4 or fewer neighbors including themselves).</returns>
     /// <remarks>
     /// This method does not modify the floor state. It only identifies which rolls are currently accessible
     /// based on the criterion that a roll is accessible if it has 4 or fewer neighboring rolls (including itself) in a 3×3 grid.
     /// </remarks>
-    private HashSet<RollOfPaper> GetAccessibleRolls()
+    private List<(int Row, int Column)> GetAccessibleRollKeys()
     {
-        HashSet<RollOfPaper> removedRolls = [];
-        foreach (RollOfPaper roll in _rolls)
+        List<(int Row, int Column)> accessibleKeys = [];
+        foreach (RollOfPaper roll in _rolls.Values)
         {
             int count = CountNeighbors(roll);
             if (count <= 4)
             {
-                _ = removedRolls.Add(roll);
+                accessibleKeys.Add((roll.Row, roll.Column));
             }
         }
-        return removedRolls;
+        return accessibleKeys;
     }
 
     /// <summary>
@@ -144,11 +149,12 @@ internal class Floor
         int col = roll.Column;
 
         // Check all 9 positions in 3×3 grid centered on the roll
+        // Using value tuples for dictionary lookups eliminates temporary RollOfPaper allocations
         for (int i = -1; i <= 1; i++)
         {
             for (int j = -1; j <= 1; j++)
             {
-                if (_rolls.TryGetValue(new RollOfPaper(row + i, col + j), out _))
+                if (_rolls.ContainsKey((row + i, col + j)))
                 {
                     count++;
                 }
