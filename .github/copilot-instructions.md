@@ -93,6 +93,62 @@ Leverage the latest C# 14 features where applicable:
 - Show how to create consistent error responses across the API.
 - Explain problem details (RFC 7807) implementation for standardized error responses.
 
+## Validation Patterns for Records with Mutable Properties
+
+### Record Validation Requirements
+
+When creating records with mutable properties that have invariants:
+
+1. **Validate in both constructor AND property setters**
+   - Constructor validation alone is insufficient if properties have public setters
+   - Property setters can bypass constructor validation after object creation
+
+2. **Constructor should set backing fields directly**
+   - Use `_field = value` instead of `this.property = value` in constructor
+   - Avoids initialization order issues (e.g., validating against uninitialized fields)
+   - Setting properties in constructor can fail validation due to default field values
+
+3. **Extract duplicated error messages**
+   - Use private static helper methods for error message generation
+   - Ensures consistency between constructor and property validation
+   - Example:
+     ```csharp
+     private static string MustBePositiveError(string paramName, BigInteger value)
+         => $"{char.ToUpper(paramName[0])}{paramName.Substring(1)} value ({value}) must be positive.";
+     ```
+
+4. **Validation order matters**
+   - Check simpler/faster validations first (e.g., non-null, positive)
+   - Check cross-property validations last (e.g., start <= end)
+   - Fail fast on clearly invalid values before more complex checks
+
+### Testing Validation
+
+When adding or changing validation rules:
+
+1. **Test both constructor and property setters**
+   - Don't assume constructor tests cover property setter behavior
+   - Example: `ConstructorWithNegativeStartThrows` AND `SetStartToNegativeValueThrows`
+
+2. **Search and update ALL related tests**
+   - Check integration tests, not just unit tests
+   - Use code search to find tests that might be affected by validation changes
+   - Example: Changing from non-negative to positive affects tests in multiple test files
+
+3. **Cover edge cases explicitly**
+   - Boundary values (zero, negative, equal values)
+   - Large values (BigInteger edge cases)
+   - Both invalid cases (expect exception) and valid cases (expect success)
+
+### Domain Constraints
+
+Be explicit about mathematical/domain terminology:
+- **Positive** means `> 0` (excludes zero)
+- **Non-negative** means `>= 0` (includes zero)
+- **Negative** means `< 0` (excludes zero)
+- **Non-positive** means `<= 0` (includes zero)
+- Document why constraints exist in comments or XML documentation
+
 ## API Versioning and Documentation
 
 - Guide users through implementing and explaining API versioning strategies.

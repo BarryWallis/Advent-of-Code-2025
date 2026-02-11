@@ -25,5 +25,7 @@
   </Folder>
   <Folder Name="/Day5/">
     <Project Path="Day5a/Day5a.csproj" Id="18b2b98b-d321-4351-898f-153e5e050568" />
+    <Project Path="Day5b.Tests/Day5b.Tests.csproj" />
+    <Project Path="Day5b/Day5b.csproj" Id="1f6c4f2f-52ca-4a2a-bc2f-a9656966768b" />
   </Folder>
 </Solution>
