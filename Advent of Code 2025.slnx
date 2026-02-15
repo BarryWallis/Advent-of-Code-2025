@@ -28,4 +28,7 @@
     <Project Path="Day5b.Tests/Day5b.Tests.csproj" />
     <Project Path="Day5b/Day5b.csproj" Id="1f6c4f2f-52ca-4a2a-bc2f-a9656966768b" />
   </Folder>
+  <Folder Name="/Day6/">
+    <Project Path="Day6a/Day6a.csproj" Id="757ce690-3a16-44c5-9b23-554aadfcbc33" />
+  </Folder>
 </Solution>
