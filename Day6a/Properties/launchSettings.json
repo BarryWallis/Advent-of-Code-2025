@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Day6a": {
+      "commandName": "Project",
+      "commandLineArgs": "<\"C:\\Users\\barry\\OneDrive\\Source\\Repos\\Advent of Code 2025\\Day6a\\data.txt\""
+    }
+  }
+}

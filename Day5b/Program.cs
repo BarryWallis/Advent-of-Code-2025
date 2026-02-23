@@ -153,7 +153,7 @@ public partial class Program
             throw new InvalidDataException("Input contains no data. Expected at least one interval.");
         }
 
-        List<Interval> intervals = new(lines.Count());
+        List<Interval> intervals = [with(lines.Count())];
         foreach (string line in lines)
         {
             string[] intervalBuffer = line.Split('-');
